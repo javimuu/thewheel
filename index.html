@@ -1,0 +1,427 @@
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="apple-touch-icon" type="image/png"
+        href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png">
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+
+    <link rel="shortcut icon" type="image/x-icon"
+        href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico">
+
+    <link rel="mask-icon" type="image/x-icon"
+        href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg"
+        color="#111">
+
+    <title>Vòng quay hối cải</title>
+
+    <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+        #_1 {
+            fill: #ba4d4e;
+        }
+
+        #_2 {
+            fill: #1592e8;
+        }
+
+        #_3 {
+            fill: #14c187;
+        }
+
+        #_4 {
+            fill: #fc7800;
+        }
+
+        #_5 {
+            fill: #14c187;
+        }
+
+        #_6 {
+            fill: #1592e8;
+        }
+
+        #_7 {
+            fill: #ba4d4e;
+        }
+
+        #_8 {
+            fill: #1592e8;
+        }
+
+        #_9 {
+            fill: #14c187;
+        }
+
+        #_10 {
+            fill: #fc7800;
+        }
+
+        #_11 {
+            fill: #14c187;
+        }
+
+        #_12 {
+            fill: #1592e8;
+        }
+
+        .frame,
+        .sticks {
+            fill: #fff;
+        }
+
+        .winIndicator {
+            fill: #fff;
+        }
+
+        .wheelMiddle {
+            fill: #fff;
+        }
+
+        body {
+            text-align: center;
+            margin: auto;
+            background-color: tomato;
+        }
+
+        #mainWheel {
+            float: right;
+        }
+
+        .luckywheel {
+            margin: 40px auto;
+            width: 50%;
+            height: 50%;
+        }
+
+        .btn,
+        .btn:visited {
+            font-weight: 800;
+            margin: 10px;
+            height: 40px;
+            width: 140px;
+            box-shadow: 4px 4px 20px 0 #cc4c45;
+            border-radius: 0;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
+        }
+
+        .btn:hover,
+        .btn:active {
+            color: #fff;
+            background-color: #000;
+            border: none;
+            text-decoration: none;
+            box-shadow: 4px 4px 5px 0 #cc4c45;
+        }
+    </style>
+
+    <script>
+        window.console = window.console || function (t) { };
+    </script>
+
+    <script>
+        if (document.location.search.match(/type=embed/gi)) {
+            window.parent.postMessage("resize", "*");
+        }
+    </script>
+
+
+</head>
+
+<body translate="no">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:800" rel="stylesheet">
+    <div class="container">
+        <div class="row">
+            <div class="luckywheel">
+                <svg id = "mainWheel" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 730"></svg>
+            </div> <!--   End of wheel div Zone   -->
+        </div>
+    </div>
+
+    <!--   Button Zone   -->
+    <div class="container">
+        <div class="row buttons">
+            <div class="col-xs-6 col-lg-6 col-md-6">
+                <button id="btnPlay" class="btn btn-primary">Chiến luôn</button>
+            </div>
+            <div class="col-xs-6 col-lg-6 col-md-6">
+                <button id="btnSlowMo" class="btn btn-primary">Nhẹ nhàng</button>
+            </div>
+        </div>
+    </div>
+
+    <!--   End of Button Zone   -->
+    <script
+        src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+
+    <script>
+        // const svg = Snap().attr({ viewBox: [0, 0, '730', '730'].join(' ') });
+        const svg = Snap("#mainWheel")
+        const spinOptions = [
+            "Mua kem",
+            "Viết blog",
+            "Miễn phạt",
+            "Tổ chức Seminar",
+            "Đóng 10k",
+            "Phạt thêm lần nữa"
+        ];
+
+        const spinColors = [
+            "#ba4d4e",
+            "#1592e8",
+            "#14c187",
+            "#fc7800",
+            "#14c187",
+            "#1592e8",
+            "#ba4d4e",
+            "#1592e8",
+            "#14c187",
+            "#fc7800",
+            "#14c187",
+            "#1592e8"
+        ];
+
+        class Roulette {
+            constructor(options, colors) {
+
+                this.options = options
+                this.colors = colors
+
+                this.D = 720 // diameter
+                const PERIMETER = 360
+                this.P = PERIMETER / this.options
+                this.R = (this.D / 2)// radius
+
+                // this.s = Snap().attr({ width: '100%', height: '100%', viewBox: [0, 0, this.D, this.D].join(' ') }).appendTo(svg)
+                this.s = svg;
+                this.ref = this.s.g().attr({
+                    class: 'wheel',
+                    transform: 'translate(5,5)'
+                })
+                const mainCircle = this.ref.circle(this.D/2, this.D/2, this.D/2+5).attr({
+                    class: "frame"
+                })
+                this.selectors = this.ref.g().attr({
+                    class: 'selector'
+                })
+                this.active = this.s.g().attr({
+                    class: 'active'
+                })
+
+                this.rotation = 0
+
+            }
+
+            draw() {
+
+                const
+                    { P, R, options, colors } = this,
+                    vertexizer = fn => R + (R * fn((-90 + P) * Math.PI / 180)),
+                    Vx = vertexizer(Math.cos), // vertexX
+                    Vy = vertexizer(Math.sin), // vertexY
+
+                    piece = this.s
+                        .path(`M${R},${R} ${R},${0}A ${R},${R} 0 0 1 ${Vx} ${Vy} z`)
+                        .attr({
+                            transform: `rotate(${P * -0.5} ${R} ${R})`
+                        })
+                        .toDefs()
+
+                Array(options).fill().forEach((_, i) => {
+                    const fill = this.s
+                        .use(piece)
+                        .attr({
+                            fill: colors[i % colors.length]
+                        }),
+                        text = this.s.text(R/2.4, `${R+i}`, `${spinOptions[i]}`)
+                            .attr({
+                                textAnchor: 'middle',
+                                fontSize: 30,
+                                fill: '#fff',
+                                transform: `rotate(${90} ${R} ${R})`
+                            }),
+
+                        unit = this.s
+                            .g(fill, text)
+                            .attr({
+                                id: 'piece' + i,
+                                fill: colors[i % colors.length],
+                                transform: `rotate(${P * (i)} ${R} ${R})`
+                            })
+
+                    this.selectors.append(unit)
+                })
+
+                this.gMiddle = this.ref.g().attr({
+                    class: 'middle'
+                })
+
+                const gWheelMiddle = this.gMiddle.g().attr({
+                    class: "wheelMiddle"
+                }).circle(R, R, 30.5).attr({
+                    fill: '#fff'
+                })
+
+                const gCircle = this.gMiddle.circle(R, R, 10.5).attr({
+                    fill: '#ccc',
+                    id: 'middle-3'
+                })
+
+                // <circle class="frame" cx="365" cy="365" r="347.6"/>
+
+                const gActive =  this.active.g();
+                gActive.path("M715,122.5c-11.4-17.9-35.8-22.8-54.5-11a41.7,41.7,0,0,0-13.6,14.1l-33.6,58.9a2.3,2.3,0,0,0,0,2.4,2.4,2.4,0,0,0,2.3,1.1l67.5-5.1a43.8,43.8,0,0,0,18.6-6.3C662.4,192.7,738.3,178.5,715,122.5Z").attr({
+                    // transform: 'translate(0)',
+                    opacity: 0.22
+                })
+                gActive.path("M719.5,120.4a38.4,38.4,0,0,0-66,1.8l-31.5,57.5a2.1,2.1,0,0,0,0,2.4,2.6,2.6,0,0,0,2.2,1.2l65.6-3.9a39.6,39.6,0,0,0,17.9-5.9A38.5,38.5,0,0,0,719.5,120.4Z").attr({
+                    // transform: 'translate(0)',
+                    class: 'winIndicator',
+                })
+
+                gActive.circle(705, 125, 8.5).attr({
+                    fill: '#ccc'
+                })
+            }
+
+
+            spin() {
+                const { P, R, options } = this,
+
+                    prenTrosSeleccionat = tros => {
+                        const response = tros % options
+                        if (tros < 0) return options + response
+                        return response
+                    }
+
+                this.rotation += Math.random() * 360
+
+                this.ref.animate({
+                    transform: `rotate(${this.rotation + (P * 0.5)},${R},${R})`
+                },
+                    5000,
+                    mina.easeout
+                );
+
+                // const trosSeleccionat = Math.floor(options - (this.rotation / P)),
+                //  seleccionat = prenTrosSeleccionat(trosSeleccionat)
+                // pieces[seleccionat].attr({stroke:'#f00'});
+            }
+        }
+
+        class ResultsBar {
+
+            set results(name) {
+                this.log.push(name)
+            }
+
+            get results() {
+                return this.log
+            }
+
+            constructor() {
+                this.log = []
+
+                this.s = Snap().attr({
+                    width: '10%',
+                    height: '100%',
+                    x: '90%'
+                    //, viewBox: [0, 0, 100, 100].join(' ') 
+                }).appendTo(svg)
+            }
+
+            add(result) {
+                this.results.push(result)
+            }
+
+            get results() {
+                return this.results
+            }
+
+            draw() {
+                const
+                    leftBar = this.s.line(0, 0, 0, '100%'),
+                    rightBar = this.s.line('100%', 0, '100%', '100%')
+                this.s.g(leftBar, rightBar).attr({ stroke: 'red' })
+            }
+        }
+
+        const roulette = new Roulette(spinOptions.length, spinColors)
+        roulette.draw()
+
+
+        $(document).ready(function () {
+            var $btnPlay = $("#btnPlay");
+            var $btnSlowMo = $("#btnSlowMo");
+            var active = $(".active");
+
+            var wheel = $(".wheel");
+            var currentRotation;
+            var deg;
+            var lastRotation = -20;
+
+            var indicator = new TimelineMax();
+            indicator.to(active, .13, { rotation: -10, transformOrigin: "65% 36%", ease: Power1.easeOut }).
+                to(active, .13, { rotation: 3, ease: Power4.easeOut }).
+                add("end");
+
+            var spinWheel = new TimelineMax();
+
+            deg = getRandomInt(360, 1080);
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            spinWheel.to(wheel, 5, {
+                rotation: deg, transformOrigin: "50% 50%", ease: Power4.easeOut, onUpdate:
+                    function () {
+                        console.log(this.target[0]);
+                        currentRotation = Math.round(this.target[0]._gsTransform.rotation); //_gsTransform: current position of the wheel
+                        tolerance = currentRotation - lastRotation;
+
+                        console.log("lastRot: " + lastRotation);
+                        console.log("currentRot: " + currentRotation);
+                        console.log("tol: " + tolerance);
+                        console.log(indicator.progress());
+                        console.log("spinwheelprogress: " + spinWheel.progress());
+
+                        if (Math.round(currentRotation) % (360 / (spinOptions.length)) <= tolerance) {
+                            if (indicator.progress() > 0.9 || indicator.progress() === 0) {
+                                indicator.play(0);
+                            }
+                        }
+                        lastRotation = currentRotation;
+                    }
+            });
+
+            spinWheel.add("end");
+
+            $btnPlay.click(
+                function () {
+                    indicator.timeScale(1).seek(0);
+                    spinWheel.timeScale(1).seek(0);
+                });
+
+            $btnSlowMo.click(
+                function () {
+                    indicator.timeScale(.2).seek(.5);
+                    spinWheel.timeScale(.2).seek(.5);
+                });
+        });
+    </script>
+
+</body>
+
+</html>
